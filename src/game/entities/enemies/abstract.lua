@@ -21,7 +21,7 @@ abstract.health = nil
 abstract.lastHit = 0
 abstract.hitFlashTime = 0.05
 
-abstract.shootfrequency  = 0
+abstract.shootfrequency = 0
 abstract.projectileType = nil
 
 abstract.score = nil
@@ -54,7 +54,7 @@ function abstract:update(player, projectiles, dt)
             if entity.team == 'friendly' then
                 self:hit(entity.damage)
             end
-            table.remove(projectiles.entities, i)
+            entity.remove = true
         end
     end
 
@@ -88,12 +88,12 @@ end
 
 function abstract:shoot(projectiles)
     if self.projectileType ~= nil then
-        local projectile = projectiles.shoot(self.projectileType, self.position.x, self.position.y + self.collisionRadius)
+        local projectile = projectiles:shoot(self.projectileType, self.position.x, self.position.y + self.collisionRadius)
         projectile.position.y = projectile.position.y + projectile.collisionRadius
     end
 end
 
-function abstract:move(dt)
+function abstract:move(player, dt)
     self.position.x = self.position.x + self.speed.x * dt
     self.position.y = self.position.y + self.speed.y * dt
 end

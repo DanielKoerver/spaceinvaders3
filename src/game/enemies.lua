@@ -8,6 +8,8 @@ enemies.types.abstract = require('game/entities/enemies/abstract')
 -- types
 enemies.types.asteroid = helper.mergeTables(setmetatable({}, {__index = enemies.types.abstract}), require('game/entities/enemies/asteroid'))
 enemies.types.weakAsteroid = helper.mergeTables(setmetatable({}, {__index = enemies.types.asteroid}), require('game/entities/enemies/weakAsteroid'))
+enemies.types.glider = helper.mergeTables(setmetatable({}, {__index = enemies.types.abstract}), require('game/entities/enemies/glider'))
+enemies.types.kamikaze = helper.mergeTables(setmetatable({}, {__index = enemies.types.abstract}), require('game/entities/enemies/kamikaze'))
 
 enemies.nextSpawn = love.timer.getTime() + 1
 
@@ -47,14 +49,14 @@ end
 function enemies:update(player, projectiles, dt)
     -- spawn new enemies
     if love.timer.getTime() > self.nextSpawn then
-        local spawnEnemyTypes = {'asteroid', 'weakAsteroid'}
+        local spawnEnemyTypes = {'asteroid', 'weakAsteroid', 'glider', 'kamikaze'}
         self:spawn(spawnEnemyTypes[love.math.random(1, #spawnEnemyTypes)])
         self.nextSpawn = love.timer.getTime() + 2 + love.math.random()
     end
 
     -- update positions
     for i, entity in ipairs(self.entities) do
-        if entity.move then entity:move(dt) end
+        if entity.move then entity:move(player, dt) end
     end
 
     -- additional update if applicable

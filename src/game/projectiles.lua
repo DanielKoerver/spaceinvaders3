@@ -7,6 +7,7 @@ projectiles.types.abstract = require('game/entities/projectiles/abstract')
 
 -- types
 projectiles.types.playerShot = helper.mergeTables(setmetatable({}, {__index = projectiles.types.abstract}), require('game/entities/projectiles/playerShot'))
+projectiles.types.hostileShot = helper.mergeTables(setmetatable({}, {__index = projectiles.types.abstract}), require('game/entities/projectiles/hostileShot'))
 
 function projectiles:init()
     --load images
@@ -32,6 +33,8 @@ function projectiles:shoot(type, x, y)
     }
 
     table.insert(self.entities, entity)
+
+    return entity
 end
 
 function projectiles:update(dt)

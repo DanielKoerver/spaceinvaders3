@@ -100,7 +100,7 @@ function player:collide(enemies, projectiles, dt)
         local entity = projectiles.entities[i]
         if (entity.team == 'hostile' and helper:circlesCollide(self.position.x, self.position.y, self.collisionRadius, entity.position.x, entity.position.y, entity.collisionRadius)) then
             self:hit(entity.damage)
-            table.remove(projectiles.entities, i)
+            entity.remove = true
         end
     end
 end
@@ -115,7 +115,7 @@ function player:hit(damage, invincibilityTime)
         end
     end
 
-    if self.health > 0 then self.health = 0 end
+    if self.health < 0 then self.health = 0 end
 
     if self.health == 0 then
         game.hasEnded = true
