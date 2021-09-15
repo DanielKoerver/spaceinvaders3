@@ -24,6 +24,8 @@ abstract.hitFlashTime = 0.05
 abstract.shootfrequency  = 0
 abstract.projectileType = nil
 
+abstract.score = nil
+
 function abstract:init()
     -- set random image
     self.imageIndex = love.math.random(1, #self.images)
@@ -44,7 +46,7 @@ function abstract:init()
     self.collisionRadius = self.radius * self.collisionRadiusFactor
 end
 
-function abstract:update(projectiles, dt)
+function abstract:update(player, projectiles, dt)
     -- collision
     for i = #projectiles.entities, 1, -1 do
         local entity = projectiles.entities[i]
@@ -64,7 +66,7 @@ function abstract:update(projectiles, dt)
 
     -- die
     if self.health ~= nil and self.health <= 0 then
-        self:die()
+        self:die(player)
     end
 end
 
@@ -75,12 +77,13 @@ function abstract:hit(damage)
     end
 end
 
-function abstract:collideWithPlayer()
-    self:die()
+function abstract:collideWithPlayer(player)
+    self:die(player)
 end
 
-function abstract:die()
+function abstract:die(player)
     self.remove = true
+    if self.score then player:addScore(self.score) end
 end
 
 function abstract:shoot(projectiles)
@@ -100,12 +103,19 @@ function abstract:draw()
 
     -- flash on hit
     if (self.health ~= nil and self.lastHit + self.hitFlashTime > love.timer.getTime() and self.lastHit < love.timer.getTime()) then
-        love.graphics.setColor({1, 0.5, 0.5})
+        love.graphics.setColor({1, 0.75, 0.75})
     else
         love.graphics.setColor({1, 1, 1})
     end
 
     love.graphics.draw(image, self.position.x, self.position.y, 0, 1, 1, self.size.x / 2, self.size.y / 2)
+end
+
+function abstract:drawDebug()
+    love.graphics.setColor({255, 0, 0})
+    love.graphics.circle('line', self.position.x, self.position.y, self.radius, 20)
+    love.graphics.print(self.type, self.position.x - 50, self.position.y - 10)
+    love.graphics.print((self.health and self.health or 'nil'), self.position.x - 10, self.position.y + 10)
 end
 
 return abstract

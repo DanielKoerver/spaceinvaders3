@@ -11,7 +11,12 @@ function helper:dump(o)
     else
        return tostring(o)
     end
- end
+end
+
+function helper.mergeTables(table1, table2)
+    for k,v in pairs(table2) do table1[k] = v end
+    return table1
+end
 
 function helper.distance(x1, y1, x2, y2)
     return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))

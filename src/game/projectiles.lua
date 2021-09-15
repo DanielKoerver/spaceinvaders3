@@ -5,9 +5,8 @@ projectiles.entities = {}
 projectiles.types = {}
 projectiles.types.abstract = require('game/entities/projectiles/abstract')
 
--- playerShot
-projectiles.types.playerShot = setmetatable({}, {__index = projectiles.types.abstract})
-for k,v in pairs(require('game/entities/projectiles/playerShot')) do projectiles.types.playerShot[k] = v end
+-- types
+projectiles.types.playerShot = helper.mergeTables(setmetatable({}, {__index = projectiles.types.abstract}), require('game/entities/projectiles/playerShot'))
 
 function projectiles:init()
     --load images
@@ -16,6 +15,10 @@ function projectiles:init()
             projectileType.image = love.graphics.newImage('assets/images/projectiles/'..projectileTypeName..'.png')
         end
     end
+end
+
+function projectiles:reset()
+    self.entities = {}
 end
 
 function projectiles:shoot(type, x, y)
@@ -55,6 +58,7 @@ end
 function projectiles:draw()
     for _, entity in ipairs(self.entities) do
         entity:draw()
+        if game.debugMode and entity.drawDebug then entity:drawDebug() end
     end
 end
 

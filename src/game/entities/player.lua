@@ -21,6 +21,8 @@ player.hitFlashTime = 0.05
 player.invincibilityEnd = 0
 player.isInvincible = false
 
+player.score = 0
+
 function player:init()
     self.image = love.graphics.newImage('assets/images/player.png')
     self.size = {x = self.image:getWidth(), y = self.image:getHeight()}
@@ -28,6 +30,13 @@ function player:init()
     self.collisionRadius = helper.distance(0, 0, self.size.x, self.size.y) / 2 * 0.7
     self.health = self.maxHealth
 end
+
+function player:reset()
+    self.position = {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() - self.size.y / 2 - 30}
+    self.velocity = {x = 0, y = 0}
+    self.health = self.maxHealth
+    self.score = 0
+end;
 
 function player:update(enemies, projectiles, dt)
     self:move(dt)
@@ -105,12 +114,22 @@ function player:hit(damage, invincibilityTime)
             self.invincibilityEnd = love.timer.getTime() + invincibilityTime
         end
     end
+
+    if self.health > 0 then self.health = 0 end
+
+    if self.health == 0 then
+        game.hasEnded = true
+    end
+end
+
+function player:addScore(score)
+    self.score = self.score + score
 end
 
 function player:draw()
     -- flash on hit
     if (self.lastHit + player.hitFlashTime > love.timer.getTime() and self.lastHit < love.timer.getTime()) then
-        love.graphics.setColor({1, 0.5, 0.5})
+        love.graphics.setColor({1, 0.75, 0.75})
     else
         love.graphics.setColor({1, 1, 1})
     end
@@ -118,6 +137,11 @@ function player:draw()
     --love.graphics.draw(self.image, self.position.x + self.velocity.x / self.maxSpeed * 20, self.position.y,
     --    0, (1.0 - math.abs(self.velocity.x) / self.maxSpeed * 0.15), 1, self.size.x / 2, self.size.y / 2)
     love.graphics.draw(self.image, self.position.x, self.position.y, 0, 1, 1, self.size.x / 2, self.size.y / 2)
+
+    if game.debugMode then
+        love.graphics.setColor({1, 0, 0})
+        love.graphics.circle('line', self.position.x, self.position.y, self.collisionRadius, 20)
+    end
 end
 
 return player

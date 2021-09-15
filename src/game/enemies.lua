@@ -5,13 +5,9 @@ enemies.entities = {}
 enemies.types = {}
 enemies.types.abstract = require('game/entities/enemies/abstract')
 
--- astroid
-enemies.types.asteroid = setmetatable({}, {__index = enemies.types.abstract})
-for k,v in pairs(require('game/entities/enemies/asteroid')) do enemies.types.asteroid[k] = v end
-
--- weakAstroid
-enemies.types.weakAsteroid = setmetatable({}, {__index = enemies.types.asteroid})
-for k,v in pairs(require('game/entities/enemies/weakAsteroid')) do enemies.types.weakAsteroid[k] = v end
+-- types
+enemies.types.asteroid = helper.mergeTables(setmetatable({}, {__index = enemies.types.abstract}), require('game/entities/enemies/asteroid'))
+enemies.types.weakAsteroid = helper.mergeTables(setmetatable({}, {__index = enemies.types.asteroid}), require('game/entities/enemies/weakAsteroid'))
 
 enemies.nextSpawn = love.timer.getTime() + 1
 
@@ -33,6 +29,11 @@ function enemies:init()
     end
 end
 
+function enemies:reset()
+    self.entities = {}
+    self.nextSpawn = love.timer.getTime() + 1
+end
+
 function enemies:spawn(type)
     local entity = setmetatable({}, {__index = self.types[type]})
 
@@ -43,7 +44,7 @@ function enemies:spawn(type)
     table.insert(self.entities, entity)
 end
 
-function enemies:update(projectiles, dt)
+function enemies:update(player, projectiles, dt)
     -- spawn new enemies
     if love.timer.getTime() > self.nextSpawn then
         local spawnEnemyTypes = {'asteroid', 'weakAsteroid'}
@@ -58,7 +59,7 @@ function enemies:update(projectiles, dt)
 
     -- additional update if applicable
     for i, entity in ipairs(self.entities) do
-        if entity.update then entity:update(projectiles, dt) end
+        if entity.update then entity:update(player, projectiles, dt) end
     end
 
     -- remove objects which are out of window
@@ -73,6 +74,7 @@ end
 function enemies:draw()
     for _, entity in ipairs(self.entities) do
         entity:draw()
+        if game.debugMode and entity.drawDebug then entity:drawDebug() end
     end
 end
 

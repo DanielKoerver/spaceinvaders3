@@ -28,4 +28,9 @@ function abstract.draw(self)
     love.graphics.draw(self.image, self.position.x, self.position.y, 0, 1, 1, self.size.x / 2, self.size.y / 2)
 end
 
+function abstract.drawDebug(self)
+    love.graphics.setColor({1, 0, 0})
+    love.graphics.circle('line', self.position.x, self.position.y, self.collisionRadius, 20)
+end
+
 return abstract

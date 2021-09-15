@@ -6,7 +6,7 @@ asteroid.speedRange = {y = {min = 150, max = 220}}
 asteroid.rotationSpeed = 0
 asteroid.rotationSpeedRange = {min = -0.4, max = 0.4}
 
-asteroid.radiusRange = {min = 50, max = 100}
+asteroid.radiusRange = {min = 50, max = 80}
 asteroid.collisionRadiusFactor = 0.8
 
 asteroid.collisionDamage = 30
@@ -24,7 +24,7 @@ end
 
 function asteroid:collideWithPlayer(player)
     self.speed.x = 80 * (player.position.x >= self.position.x and -1 or 1)
-    self:die()
+    self:die(player)
 end
 
 function asteroid:draw()
