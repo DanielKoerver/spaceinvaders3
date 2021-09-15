@@ -23,15 +23,12 @@ function projectiles:shoot(type, x, y)
 
     if entity.init then entity:init() end
     entity.type = type
-
     entity.position = {
         x = x,
         y = y
     }
 
     table.insert(self.entities, entity)
-
-    return entity
 end
 
 function projectiles:update(dt)

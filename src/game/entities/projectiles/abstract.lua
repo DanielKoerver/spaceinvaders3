@@ -12,12 +12,9 @@ abstract.collisionRadius = nil
 abstract.collisionRadiusFactor = 1
 
 function abstract.init(self)
-    -- size
     self.size = {x = self.image:getWidth(), y = self.image:getHeight()}
     self.radius = (self.size.x > self.size.y) and self.size.x or self.size.y
-
     self.collisionCenter = {x = self.position.x + self.size.x / 2, y = self.position.y + self.size.y / 2}
-
     self.collisionRadius = self.radius * self.collisionRadiusFactor
 end
 
